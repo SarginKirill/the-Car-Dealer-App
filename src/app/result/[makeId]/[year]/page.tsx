@@ -1,11 +1,7 @@
+import { Card } from '@/components/Card/Card';
 import { GetCarModel } from '@/utils/getCarModel';
 import { GetCarModels } from '@/utils/getCarModels';
 import { getYears } from '@/utils/getYears';
-import { Suspense } from 'react';
-
-type Car = {
-  Model_Name: string;
-};
 
 export async function generateStaticParams() {
   const models = await GetCarModels();
@@ -28,18 +24,11 @@ export default async function Page({
 }) {
   const { makeId, year } = await params;
 
-  const models = (await GetCarModel(makeId, year)) as unknown as Car[];
+  const models = await GetCarModel(makeId, year);
+
   return (
-    <div>
-      <h1>Model ID: {makeId}</h1>
-      <h2>Year: {year}</h2>
-      <ul>
-        <Suspense fallback={<p>Loading...</p>}>
-          {models.map((model, index) => (
-            <li key={index}>{model.Model_Name}</li>
-          ))}
-        </Suspense>
-      </ul>
-    </div>
+    <>
+      <Card models={models} year={year} />
+    </>
   );
 }
